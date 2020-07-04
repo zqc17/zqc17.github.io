@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="functional-program,design-pattern,Haskell,Java,Rust,kotlin," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="每个第一次接触 Monad 概念的人都会尝试写一篇文章发表自己的错误理解。（注：这里是指函数式编程中的 Monad，不是哲学中的 Monad）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于 Monad 的胡言乱语">
+<meta property="og:url" content="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/index.html">
+<meta property="og:site_name" content="张秦川的博客">
+<meta property="og:description" content="每个第一次接触 Monad 概念的人都会尝试写一篇文章发表自己的错误理解。（注：这里是指函数式编程中的 Monad，不是哲学中的 Monad）">
+<meta property="og:image" content="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/rx-concatmap.webp">
+<meta property="article:published_time" content="2020-07-04T07:19:32.000Z">
+<meta property="article:modified_time" content="2020-07-04T11:51:25.935Z">
+<meta property="article:author" content="张秦川">
+<meta property="article:tag" content="functional-program">
+<meta property="article:tag" content="design-pattern">
+<meta property="article:tag" content="Haskell">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Rust">
+<meta property="article:tag" content="kotlin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/rx-concatmap.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/"/>
+
+
+
+
+
+  <title>关于 Monad 的胡言乱语 | 张秦川的博客</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">张秦川的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张秦川">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="张秦川的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于 Monad 的胡言乱语</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-04T15:19:32+08:00">
+                2020-07-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CS/" itemprop="url" rel="index">
+                    <span itemprop="name">CS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>每个第一次接触 Monad 概念的人都会尝试写一篇文章发表自己的错误理解。<br>（注：这里是指<strong>函数式编程</strong>中的 Monad，不是哲学中的 Monad）</p>
+<a id="more"></a>
+<h1 id="从-Naive-的例子开始"><a href="#从-Naive-的例子开始" class="headerlink" title="从 Naïve 的例子开始"></a>从 Naïve 的例子开始</h1><p><a href="http://reactivex.io/" target="_blank" rel="noopener">ReactiveX</a>称自己结合了观察者模式、迭代器模式和<strong>函数式编程</strong>。</p>
+<blockquote>
+<p><strong>ReactiveX</strong> is a combination of the best ideas from the Observer pattern, the Iterator pattern, and <strong>functional programming</strong></p>
+</blockquote>
+<p>以<a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">RxJava</a>为例，第一次接触的人可能会不理解 <code>concatMap</code> 是什么含义。</p>
+<p><img src="/2020/07/04/My-Nonsense-of-Monad/rx-concatmap.webp" alt="rx-concatmap"></p>
+<p>上图是所谓的<a href="http://reactivex.io/documentation/observable.html" target="_blank" rel="noopener">宝石图</a>，其中：</p>
+<ol>
+<li>第一行表示一个 <code>Observable&lt;圆形&gt;</code> 可以理解成一个不断发射“圆形”的发射器，图中一共发射了红、绿、蓝三个“圆形”；</li>
+<li>第二行就是 <code>concatMap</code> 操作，每接到一个“圆形”就会产生一个 <code>Observable&lt;菱形&gt;</code>；</li>
+<li>第三行是 <code>concatMap</code> 的操作结果，将三个不同颜色的 <code>Observable&lt;菱形&gt;</code> 给 <code>concat</code> （拼接）在一起形成一个 <code>Observable&lt;菱形&gt;</code>。</li>
+</ol>
+<blockquote>
+<p>上面的讲解有点啰嗦，很多不需要解释的事情强行解释就会有点啰嗦。为了避免进一步的啰嗦，这里不会强行举一个所谓的现实案例作为例子，就着抽象看抽象就好了。</p>
+</blockquote>
+<p>简单讲 <code>concatMap</code> 做了两件事：从 <code>Observable&lt;圆形&gt;</code> 中每拿到一个“圆形”，创建一个 <code>Observable&lt;菱形&gt;</code>；把这些 <code>Observable&lt;菱形&gt;</code> 拼接起来。</p>
+<h2 id="从具体中看抽象"><a href="#从具体中看抽象" class="headerlink" title="从具体中看抽象"></a>从具体中看抽象</h2><p>第一次接触<a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">RxJava</a>的人可能不懂<code>Observable&lt;T&gt;</code>是什么，但是肯定都知道<a href="https://en.wikipedia.org/wiki/Linked_list" target="_blank" rel="noopener">链表</a>这种数据结构，其实<code>Observable&lt;T&gt;</code>的<code>concatMap</code>就相当于把多个链表拼接成一个。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java</span></span><br><span class="line">LinkedList&lt;Circle&gt; circles;</span><br><span class="line">LinkedList&lt;Diamond&gt; result;</span><br><span class="line"><span class="keyword">for</span> (Circle circle : circles) &#123;</span><br><span class="line">    LinkedList&lt;Diamond&gt; diamonds = fromCircle(circle); <span class="comment">// 根据 circle 创建一个 diamond 的链表</span></span><br><span class="line">    result.addAll(diamonds);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>事实上两者均满足迭代器模式，我们用代数学上同态的记号$\sim$表示如下：</p>
+<script type="math/tex; mode=display">
+  \text{LinkedList<T>} \sim \text{Iterable<T>} \\
+  \text{Observable<T>} \sim \text{Iterable<T>}</script><p>就像<a href="https://en.wikipedia.org/wiki/Universal_algebra" target="_blank" rel="noopener">泛代数</a>证明一个抽象的性质，常常可以归纳为证明多项式的一个性质。<br>具体之中已经蕴含了抽象，从具体中看抽象，所以可以理解链表，其实就已经理解了 <code>Observable&lt;T&gt;</code> 。</p>
+<p>我们可以面向抽象的 <code>Iterable&lt;T&gt;</code> 定义一个通用的 <code>concatMap</code> ，虽然事实上各种各样的 <code>concatMap</code> 被重复造轮子。例如 <code>Java 8</code> 的 <code>Stream API</code>，<code>kotlin</code> 中的 <code>Sequence</code> 、本文最开始提到的 <code>RxJava</code> ，<code>Rust</code>标准库中的<code>Iterator&lt;T&gt;</code>，<code>Haskell</code>中的列表<code>[a]</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 8 Stream API</span></span><br><span class="line">Stream&lt;Circle&gt; circleStream = circles.stream();</span><br><span class="line">Stream&lt;Diamond&gt; diamondStream = circleStream</span><br><span class="line">    <span class="comment">// 严格讲 flatmap 和 concatmap 不同但很类似</span></span><br><span class="line">    .flatmap(circle -&gt; diamonds.stream());</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kotlin Sequence</span></span><br><span class="line"><span class="keyword">val</span> circleSequence = circles.asSequence()</span><br><span class="line"><span class="keyword">val</span> diamondSequence = circleSequence</span><br><span class="line">    .flatmap &#123; circle -&gt; diamonds.asSequence() &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java RxJava</span></span><br><span class="line">Observable&lt;Circle&gt; circleObservable = Observable.fromIterable(circles);</span><br><span class="line">Observable&lt;Diamond&gt; diamondObservable = circleObservable</span><br><span class="line">    .concatMap(circle -&gt; Observable.fromIterable(diamonds));</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Rust</span></span><br><span class="line"><span class="keyword">let</span> circleIterator = circles.iter();</span><br><span class="line"><span class="keyword">let</span> diamondIterator = circleIter.flatmap(|circle| diamonds.iter());</span><br></pre></td></tr></table></figure>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">let</span> diamonds = concatMap (\circle -&gt; diamonds) circles</span><br></pre></td></tr></table></figure>
+<h3 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h3><p>为了面向抽象进行编程，避免重复代码，不同的语言有不同的语法特性支持。<br>在 <code>Java</code> 这类所谓的面向对象语言中，通常使用接口进行抽象（子类多态）。<br>而 <code>Haskell</code> 中使用类型类进行抽象（类型类多态），<code>Rust</code> 中使用的 <code>trait</code>（可以翻译成特质） 与 <code>Haskell</code> 的类型类比较类似。</p>
+<p>面向接口编程时，面向对象语言中的<code>class</code>必须在定义时就声明自己实现该接口，才能复用代码。</p>
+<p>面向特质编程时，特质与类型的定义是分离的，特质相当于是对类型的扩展，窃以为面向特质更灵活，更方便代码的复用。</p>
+<h1 id="抽象的威力"><a href="#抽象的威力" class="headerlink" title="抽象的威力"></a>抽象的威力</h1><p>上文中我们看到抽象可以帮助减少重复代码，我们不妨认为所谓设计模式也是一种抽象，对重复代码模式的抽象帮助我们减少重复代码。</p>
+<p>不妨思考以下上文中的 <code>concatMap</code> 是不是非得要一个 <code>Iterable&lt;T&gt;</code> 的对象进行操作，有没有可能针对更抽象的对象进行操作？</p>
+<p>我们看一下 <code>Haskell</code> 中 <code>concatMap</code> 函数的类型<a href="https://hackage.haskell.org/package/base-4.14.0.0/docs/GHC-List.html#v:concatMap" target="_blank" rel="noopener">定义</a>：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">concatMap</span> :: (a -&gt; [b]) -&gt; [a] -&gt; [b]</span><br></pre></td></tr></table></figure>
+<p>上述定义也可以写成下面这种形式：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">concatMap</span> :: (a -&gt; <span class="type">List</span> b) -&gt; <span class="type">List</span> a -&gt; <span class="type">List</span> b</span><br></pre></td></tr></table></figure>
+<p>这个写法我们容易看出来，<code>List a</code> 可以被替换成 <code>m a</code>，只要这个<code>m</code>可以让上面的表达式“有意义”，也即 <code>a -&gt; m b</code> 可以顺利的作用到 <code>m a</code> 上得到 <code>m b</code>。</p>
+<p>那么除了 <code>List</code> 这样的 <code>m</code> 存在吗？我们容易发现 <code>Maybe</code> 就是这样的一个 <code>m</code> 。<br>我们可以定义 <code>Maybe</code> 的 <code>concatMap</code> 如下：<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">concatMap</span> :: (a -&gt; <span class="type">Maybe</span> b) -&gt; <span class="type">Maybe</span> a -&gt; <span class="type">Maybe</span> b</span><br><span class="line"><span class="title">concatMap</span> f <span class="type">Maybe</span> a = f a</span><br><span class="line"><span class="title">concatMap</span> f <span class="type">Nothing</span> = <span class="type">Nothing</span></span><br></pre></td></tr></table></figure></p>
+<p>这样的 <code>m</code> 我们还可以找出很多，我们不需要把全部找出来，我们只需要定义它。<br>我们不妨定义 <code>ConcatMap-able</code> 是所有可以执行 <code>concatMap</code> 的 <code>m</code>。</p>
+<p>是不是好像发现了新大陆，有一种上帝的感觉 : )</p>
+<p>事实上我们定义的东西就是 <code>Monad</code>。</p>
+<h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><p>关于什么是 <code>Monad</code> 可以看这个<a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html" target="_blank" rel="noopener">图解Monad</a>。</p>
+<p>简单讲 <code>Monad</code> 就可以 <code>bind</code> 的 <code>m</code> 的类型类。<code>bind</code> 的定义如下，是不是很眼熟 : )<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">bind</span> :: m a -&gt; (a -&gt; m b) -&gt; m b</span><br></pre></td></tr></table></figure></p>
+<p>类似的寻找所以可以 <code>map</code> 的 <code>m</code>，我们会得到 <code>Functor</code> 。</p>
+<!--links-->
+<!--external images-->
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/functional-program/" rel="tag"># functional-program</a>
+          
+            <a href="/tags/design-pattern/" rel="tag"># design-pattern</a>
+          
+            <a href="/tags/Haskell/" rel="tag"># Haskell</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Rust/" rel="tag"># Rust</a>
+          
+            <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/30/Android-NDK-thread-pool/" rel="next" title="Android NDK 入门 - 线程池与体积优化">
+                <i class="fa fa-chevron-left"></i> Android NDK 入门 - 线程池与体积优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">张秦川</p>
+              <p class="site-description motion-element" itemprop="description">业精于勤荒于嬉，行成于思毁于随。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从-Naive-的例子开始"><span class="nav-number">1.</span> <span class="nav-text">从 Naïve 的例子开始</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从具体中看抽象"><span class="nav-number">1.1.</span> <span class="nav-text">从具体中看抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题外话"><span class="nav-number">1.1.1.</span> <span class="nav-text">题外话</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽象的威力"><span class="nav-number">2.</span> <span class="nav-text">抽象的威力</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Monad"><span class="nav-number">2.1.</span> <span class="nav-text">Monad</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张秦川</span>
+
+  
+</div>
+
+
+  <div class="footer-custom">Powered By <a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

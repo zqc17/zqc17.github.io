@@ -87,7 +87,7 @@
 <meta property="og:description" content="每个第一次接触 Monad 概念的人都会尝试写一篇文章发表自己的错误理解。（注：这里是指函数式编程中的 Monad，不是哲学中的 Monad）">
 <meta property="og:image" content="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/rx-concatmap.webp">
 <meta property="article:published_time" content="2020-07-04T07:19:32.000Z">
-<meta property="article:modified_time" content="2020-07-04T11:56:21.021Z">
+<meta property="article:modified_time" content="2020-07-04T12:06:28.757Z">
 <meta property="article:author" content="张秦川">
 <meta property="article:tag" content="functional-program">
 <meta property="article:tag" content="design-pattern">
@@ -384,7 +384,7 @@
 <p>事实上我们定义的东西就是 <code>Monad</code>。</p>
 <h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><p>关于什么是 <code>Monad</code> 可以看这个<a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html" target="_blank" rel="noopener">图解Monad</a>。</p>
 <p>简单讲 <code>Monad</code> 就可以 <code>bind</code> 的 <code>m</code> 的类型类。<code>bind</code> 的定义如下，是不是很眼熟 : )<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">bind</span> :: m a -&gt; (a -&gt; m b) -&gt; m b</span><br></pre></td></tr></table></figure></p>
-<p>类似的寻找所以可以 <code>map</code> 的 <code>m</code>，我们会得到 <code>Functor</code> 。</p>
+<p>类似的寻找所有可以 <code>map</code> 的 <code>m</code>，我们会得到 <code>Functor</code> 。</p>
 <!--links-->
 <!--external images-->
 

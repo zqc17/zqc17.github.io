@@ -87,7 +87,7 @@
 <meta property="og:description" content="每个第一次接触 Monad 概念的人都会尝试写一篇文章发表自己的错误理解。（注：这里是指函数式编程中的 Monad，不是哲学中的 Monad）">
 <meta property="og:image" content="https://zqc17.github.io/2020/07/04/My-Nonsense-of-Monad/rx-concatmap.webp">
 <meta property="article:published_time" content="2020-07-04T07:19:32.000Z">
-<meta property="article:modified_time" content="2020-07-04T12:06:28.757Z">
+<meta property="article:modified_time" content="2020-07-04T16:04:22.293Z">
 <meta property="article:author" content="张秦川">
 <meta property="article:tag" content="functional-program">
 <meta property="article:tag" content="design-pattern">
@@ -372,7 +372,7 @@
 <p>面向接口编程时，面向对象语言中的<code>class</code>必须在定义时就声明自己实现该接口，才能复用代码。</p>
 <p>面向特质编程时，特质与类型的定义是分离的，特质相当于是对类型的扩展，窃以为面向特质更灵活，更方便代码的复用。</p>
 <h1 id="抽象的威力"><a href="#抽象的威力" class="headerlink" title="抽象的威力"></a>抽象的威力</h1><p>上文中我们看到抽象可以帮助减少重复代码，我们不妨认为所谓设计模式也是一种抽象，对重复代码模式的抽象帮助我们减少重复代码。</p>
-<p>不妨思考以下上文中的 <code>concatMap</code> 是不是非得要一个 <code>Iterable&lt;T&gt;</code> 的对象进行操作，有没有可能针对更抽象的对象进行操作？</p>
+<p>不妨思考一下上文中的 <code>concatMap</code> 是不是非得要一个 <code>Iterable&lt;T&gt;</code> 的对象进行操作，有没有可能针对更抽象的对象进行操作？</p>
 <p>我们看一下 <code>Haskell</code> 中 <code>concatMap</code> 函数的类型<a href="https://hackage.haskell.org/package/base-4.14.0.0/docs/GHC-List.html#v:concatMap" target="_blank" rel="noopener">定义</a>：</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// <span class="type">Haskell</span></span><br><span class="line"><span class="title">concatMap</span> :: (a -&gt; [b]) -&gt; [a] -&gt; [b]</span><br></pre></td></tr></table></figure>
 <p>上述定义也可以写成下面这种形式：</p>
@@ -436,6 +436,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/10/Induction-of-Coroutine/" rel="prev" title="从生产者消费者到Kotlin协程">
+                从生产者消费者到Kotlin协程 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -512,7 +516,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -534,7 +538,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
